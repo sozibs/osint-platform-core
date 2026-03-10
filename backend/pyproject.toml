@@ -1,0 +1,107 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "osint-platform-core"
+version = "1.0.0"
+description = "Production-grade OSINT platform backend"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "OSINT Platform Team" }]
+keywords = ["osint", "intelligence", "fastapi", "celery"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+]
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.32.0",
+    "sqlalchemy[asyncio]==2.0.36",
+    "asyncpg==0.30.0",
+    "alembic==1.14.0",
+    "pydantic==2.10.3",
+    "pydantic-settings==2.6.1",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "celery==5.4.0",
+    "redis==5.2.1",
+    "httpx==0.28.1",
+    "python-multipart==0.0.20",
+    "aiofiles==24.1.0",
+    "feedparser==6.0.11",
+    "beautifulsoup4==4.13.0",
+    "lxml==5.3.0",
+    "python-levenshtein==0.26.1",
+    "jellyfish==1.1.0",
+    "networkx==3.4.2",
+    "boto3==1.35.85",
+    "elasticsearch==8.17.0",
+    "weasyprint==62.3",
+    "pandas==2.2.3",
+    "openpyxl==3.1.5",
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "anyio==4.7.0",
+    "greenlet==3.1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.0",
+]
+test = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "anyio==4.7.0",
+    "httpx==0.28.1",
+]
+
+[project.scripts]
+osint-platform = "main:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "*.tests*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+log_cli = true
+log_cli_level = "INFO"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py311", "py312"]
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "PT"]
+ignore = ["E501", "B008", "A003"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
