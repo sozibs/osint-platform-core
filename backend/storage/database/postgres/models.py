@@ -335,10 +335,10 @@ class Case(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-    created_by: Mapped[uuid.UUID] = mapped_column(
+    created_by: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="SET NULL"),
-        nullable=False,
+        nullable=True,
         index=True,
     )
     assigned_to: Mapped[Optional[uuid.UUID]] = mapped_column(
@@ -390,8 +390,8 @@ class CaseEntity(Base):
     added_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
-    added_by: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=False
+    added_by: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 

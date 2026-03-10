@@ -203,7 +203,7 @@ class FileManager:
 
     async def _load_local(self, key: str) -> bytes:
         target = LOCAL_STORAGE_ROOT / key
-        if not target.exists():
+        if not await aiofiles.os.path.exists(str(target)):
             raise FileNotFoundError(f"File not found: {key}")
         async with aiofiles.open(target, "rb") as fh:
             return await fh.read()
@@ -242,7 +242,7 @@ class FileManager:
 
     async def _local_metadata(self, key: str) -> Dict[str, Any]:
         target = LOCAL_STORAGE_ROOT / key
-        if not target.exists():
+        if not await aiofiles.os.path.exists(str(target)):
             return {}
         stat = target.stat()
         mime, _ = mimetypes.guess_type(target.name)
