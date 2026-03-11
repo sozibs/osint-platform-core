@@ -20,6 +20,7 @@ def _parse_cert_component(component: tuple[tuple[str, str], ...]) -> Dict[str, s
 
 def _fetch_certificate(domain: str, port: int) -> Dict[str, Any]:
     ctx = ssl.create_default_context()
+    ctx.minimum_version = ssl.TLSVersion.TLSv1_2
     with socket.create_connection((domain, port), timeout=10) as sock:
         with ctx.wrap_socket(sock, server_hostname=domain) as ssock:
             return ssock.getpeercert()
