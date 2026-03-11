@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ..models.investigation_case import InvestigationCase
 from .org_investigation import OrgInvestigation
@@ -66,7 +66,7 @@ class WorkflowEngine:
 
         case.evidence.extend(evidence_items)
         case.status = "completed" if evidence_items else "no_results"
-        case.updated_at = datetime.utcnow()
+        case.updated_at = datetime.now(timezone.utc)
 
         logger.info(
             "WorkflowEngine: case '%s' finished with status '%s'",

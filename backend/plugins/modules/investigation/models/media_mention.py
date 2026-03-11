@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -18,4 +18,4 @@ class MediaMention(BaseModel):
     summary: Optional[str] = None
     sentiment: Optional[str] = None
     entities_mentioned: List[str] = Field(default_factory=list)
-    retrieved_at: datetime = Field(default_factory=datetime.utcnow)
+    retrieved_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
