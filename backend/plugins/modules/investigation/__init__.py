@@ -1,0 +1,1 @@
+"""Investigation OSINT module."""
