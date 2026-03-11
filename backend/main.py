@@ -40,6 +40,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.redis = redis
     logger.info("Redis connection established")
 
+    # ── Plugin / Module system ─────────────────────────────────────────────
+    from plugins.loader import load_all_plugins
+    await load_all_plugins(app)
+    logger.info("Plugin system initialized")
+
     yield  # ──────────────── application is running ────────────────
 
     # ── Teardown ───────────────────────────────────────────────────────────

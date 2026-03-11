@@ -1,0 +1,16 @@
+{
+  "name": "investigation",
+  "version": "1.0.0",
+  "description": "Comprehensive person and organization investigation workflows.",
+  "author": "OSINT Platform",
+  "license": "MIT",
+  "type": "osint-module",
+  "dependencies": {"core": ">=1.0.0"},
+  "capabilities": ["data-ingestion", "entity-creation", "relationship-discovery", "case-management"],
+  "entity_types": ["person_profile", "org_profile", "public_record", "media_mention"],
+  "relationship_types": ["employment", "affiliation", "association", "family"],
+  "api_endpoints": ["/api/v1/modules/investigation/*"],
+  "ui_components": ["CaseManager", "PersonSearch", "OrgSearch", "TimelineViewer"],
+  "permissions_required": ["read_entities", "write_entities", "manage_cases"],
+  "rate_limits": {"requests_per_minute": 30}
+}

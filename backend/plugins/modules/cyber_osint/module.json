@@ -1,0 +1,16 @@
+{
+  "name": "cyber-osint",
+  "version": "1.0.0",
+  "description": "Technical intelligence gathering on digital infrastructure and cybersecurity.",
+  "author": "OSINT Platform",
+  "license": "MIT",
+  "type": "osint-module",
+  "dependencies": {"core": ">=1.0.0"},
+  "capabilities": ["data-ingestion", "entity-creation", "threat-intelligence", "infrastructure-mapping"],
+  "entity_types": ["ip_record", "cyber_domain_record", "certificate", "threat_indicator"],
+  "relationship_types": ["hosts", "resolves_to", "shares_infrastructure", "associated_threat"],
+  "api_endpoints": ["/api/v1/modules/cyber-osint/*"],
+  "ui_components": ["IPLookup", "DomainAnalyzer", "CertificateViewer", "ThreatIntelDashboard"],
+  "permissions_required": ["read_entities", "write_entities"],
+  "rate_limits": {"requests_per_minute": 30}
+}
