@@ -1,0 +1,16 @@
+{
+  "name": "misinformation",
+  "version": "1.0.0",
+  "description": "Track, analyze, and combat misinformation and disinformation campaigns.",
+  "author": "OSINT Platform",
+  "license": "MIT",
+  "type": "osint-module",
+  "dependencies": {"core": ">=1.0.0"},
+  "capabilities": ["data-ingestion", "entity-creation", "claim-detection", "fact-checking", "narrative-analysis"],
+  "entity_types": ["claim", "narrative", "factcheck", "misinformation_campaign", "source_rating"],
+  "relationship_types": ["claim_supports", "claim_contradicts", "narrative_contains", "source_rates"],
+  "api_endpoints": ["/api/v1/modules/misinformation/*"],
+  "ui_components": ["ClaimDetector", "FactCheckViewer", "NarrativeTracker", "SourceCredibilityChecker"],
+  "permissions_required": ["read_entities", "write_entities"],
+  "rate_limits": {"requests_per_minute": 30}
+}
