@@ -1,0 +1,16 @@
+{
+  "name": "digital-footprint",
+  "version": "1.0.0",
+  "description": "Track and correlate digital identities across the internet.",
+  "author": "OSINT Platform",
+  "license": "MIT",
+  "type": "osint-module",
+  "dependencies": {"core": ">=1.0.0"},
+  "capabilities": ["data-ingestion", "entity-creation", "relationship-discovery"],
+  "entity_types": ["social_profile", "email_record", "phone_record", "username_record", "domain_record"],
+  "relationship_types": ["identity_link", "platform_association"],
+  "api_endpoints": ["/api/v1/modules/digital-footprint/*"],
+  "ui_components": ["EmailScanner", "PhoneScanner", "UsernameScanner", "SocialMediaScanner", "DomainScanner"],
+  "permissions_required": ["read_entities", "write_entities"],
+  "rate_limits": {"requests_per_minute": 60}
+}
