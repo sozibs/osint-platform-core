@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import re
 from typing import Any, Dict, Optional
+from urllib.parse import urlparse
 
 import httpx
 
@@ -13,6 +14,19 @@ logger = logging.getLogger(__name__)
 _OG_TAGS = ["og:title", "og:description", "og:image", "og:url"]
 _META_TAGS = ["description", "keywords", "author"]
 _HTTP_HEADERS = ["last-modified", "content-type"]
+
+_ALLOWED_SCHEMES = {"http", "https"}
+
+
+def _validate_url(url: str) -> None:
+    """Raise ValueError if *url* is not a safe http/https URL."""
+    parsed = urlparse(url)
+    if parsed.scheme not in _ALLOWED_SCHEMES:
+        raise ValueError(
+            f"Unsupported URL scheme '{parsed.scheme}'. Only http and https are allowed."
+        )
+    if not parsed.netloc:
+        raise ValueError("URL must include a hostname.")
 
 
 class MetadataExtractor:
@@ -27,6 +41,12 @@ class MetadataExtractor:
             "http_headers": {},
             "error": None,
         }
+
+        try:
+            _validate_url(url)
+        except ValueError as exc:
+            result["error"] = str(exc)
+            return result
 
         try:
             async with httpx.AsyncClient(
