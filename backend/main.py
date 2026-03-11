@@ -148,6 +148,7 @@ def _register_routers(app: FastAPI) -> None:
     from api.v1.routes.search import router as search_router
     from api.v1.routes.cases import router as cases_router
     from api.v1.routes.export import router as export_router
+    from api.v1.routes.notifications import router as notifications_router
 
     prefix = "/api/v1"
 
@@ -159,6 +160,7 @@ def _register_routers(app: FastAPI) -> None:
     app.include_router(search_router, prefix=prefix, tags=["search"])
     app.include_router(cases_router, prefix=prefix, tags=["cases"])
     app.include_router(export_router, prefix=prefix, tags=["export"])
+    app.include_router(notifications_router, prefix=prefix, tags=["notifications"])
 
 
 def _register_error_handlers(app: FastAPI) -> None:
