@@ -34,7 +34,10 @@ export const PushNotifications: React.FC = () => {
     try {
       const registration = await navigator.serviceWorker.ready;
       const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-      if (!vapidPublicKey) return;
+      if (!vapidPublicKey) {
+        console.warn('Push notifications: VITE_VAPID_PUBLIC_KEY is not configured');
+        return;
+      }
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,

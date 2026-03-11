@@ -64,6 +64,14 @@ export async function deleteItem(storeName: StoreName, id: number): Promise<void
   });
 }
 
+interface SyncManager {
+  register(tag: string): Promise<void>;
+}
+
+interface ServiceWorkerRegistrationWithSync extends ServiceWorkerRegistration {
+  sync: SyncManager;
+}
+
 export async function queueAction(action: {
   type: string;
   payload: unknown;
@@ -73,7 +81,7 @@ export async function queueAction(action: {
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     const registration = await navigator.serviceWorker.ready;
     try {
-      await (registration as ServiceWorkerRegistration & { sync: { register(tag: string): Promise<void> } }).sync.register('sync-queue');
+      await (registration as ServiceWorkerRegistrationWithSync).sync.register('sync-queue');
     } catch {
       // Background sync not supported, will sync on next online event
     }
