@@ -11,7 +11,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from api.v1.routes.auth import get_current_user
 
-from ..config import inv_settings  # noqa: F401 — imported for side-effects / future use
 from ..connectors.public_records.business_records import BusinessRecordsConnector
 from ..connectors.public_records.court_records import CourtRecordsConnector
 from ..models.investigation_case import InvestigationCase
@@ -122,7 +121,7 @@ async def search_organization(
     body: OrgSearchRequest,
     _current_user=Depends(get_current_user),
 ) -> InvestigationResponse:
-    """Run an organisation investigation and return the resulting profile."""
+    """Run an organization investigation and return the resulting profile."""
     try:
         workflow = OrgInvestigation()
         profile = await workflow.run(
@@ -133,12 +132,12 @@ async def search_organization(
         logger.exception("search_organization: error for '%s': %s", body.name, exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Organisation investigation failed: {exc}",
+            detail=f"organization investigation failed: {exc}",
         ) from exc
 
     return _response(
         data=profile.model_dump(mode="json"),
-        message=f"Organisation investigation completed for '{body.name}'.",
+        message=f"organization investigation completed for '{body.name}'.",
     )
 
 

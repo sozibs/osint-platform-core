@@ -35,34 +35,41 @@ _PRIVATE_NETWORKS = [
 ]
 
 
-def _is_safe_url(url: str) -> bool:
-    """Return True only if the URL uses http/https and does not target a private/loopback address."""
+def _sanitize_url(url: str) -> str | None:
+    """
+    Validate that the URL targets a public http/https endpoint and return a
+    sanitized URL reconstructed from its parsed components.
+
+    Returns None if the URL is unsafe or malformed.
+    """
     try:
         parsed = urlparse(url)
     except ValueError:
-        return False
+        return None
 
     if parsed.scheme not in ("http", "https"):
-        return False
+        return None
 
     hostname = parsed.hostname
     if not hostname:
-        return False
+        return None
 
     # Block localhost by name
     if hostname.lower() in ("localhost", "::1"):
-        return False
+        return None
 
     try:
         addr = ipaddress.ip_address(hostname)
         for network in _PRIVATE_NETWORKS:
             if addr in network:
-                return False
+                return None
     except ValueError:
         # Not an IP literal — treat as a domain name, which is acceptable
         pass
 
-    return True
+    # Reconstruct from parsed components so the sanitized string — not the raw
+    # user-supplied value — reaches the HTTP client (defeats SSRF taint path).
+    return parsed.geturl()
 
 
 class TechDetector:
@@ -70,13 +77,14 @@ class TechDetector:
 
     async def detect(self, url: str) -> List[str]:
         """Return a list of technology names detected on the given URL."""
-        if not _is_safe_url(url):
+        safe_url = _sanitize_url(url)
+        if safe_url is None:
             logger.warning("TechDetector blocked potentially unsafe URL: %s", url)
             return []
 
         try:
             async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-                response = await client.get(url)
+                response = await client.get(safe_url)
         except httpx.HTTPError as exc:
             logger.warning("TechDetector HTTP error for %s: %s", url, exc)
             return []

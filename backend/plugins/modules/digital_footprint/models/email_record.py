@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from pydantic import BaseModel, Field
@@ -17,4 +17,4 @@ class EmailRecord(BaseModel):
     breaches: List[str] = Field(default_factory=list)
     mx_records: List[str] = Field(default_factory=list)
     reputation_score: float = 0.0
-    checked_at: datetime = Field(default_factory=datetime.utcnow)
+    checked_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
