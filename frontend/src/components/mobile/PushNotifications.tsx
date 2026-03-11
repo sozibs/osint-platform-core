@@ -3,18 +3,20 @@ import './PushNotifications.css';
 
 type PermissionState = 'default' | 'granted' | 'denied';
 
+function getInitialPermission(): PermissionState {
+  if (!('Notification' in window)) return 'denied';
+  return Notification.permission as PermissionState;
+}
+
 export const PushNotifications: React.FC = () => {
-  const [permission, setPermission] = useState<PermissionState>('default');
+  const [permission, setPermission] = useState<PermissionState>(getInitialPermission);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    if (!('Notification' in window)) return;
-    setPermission(Notification.permission);
-    if (Notification.permission === 'default') {
-      const timer = setTimeout(() => setShowBanner(true), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+    if (permission !== 'default') return;
+    const timer = setTimeout(() => setShowBanner(true), 5000);
+    return () => clearTimeout(timer);
+  }, [permission]);
 
   const requestPermission = async () => {
     try {
@@ -41,7 +43,8 @@ export const PushNotifications: React.FC = () => {
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey).buffer as ArrayBuffer,
+        // Pass as string — PushManager accepts a base64url-encoded VAPID public key string
+        applicationServerKey: vapidPublicKey,
       });
 
       await fetch('/api/v1/notifications/subscribe', {
@@ -77,14 +80,3 @@ export const PushNotifications: React.FC = () => {
     </div>
   );
 };
-
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
